@@ -48,13 +48,7 @@ But five points are not enough. To interpolate them and have later a nice and sm
 
 ### Video
 
-ifdef::env-github[]
-image:https://img.youtube.com/vi/luNam-Cs4Xk/maxresdefault.jpg[link=https://youtu.be/luNam-Cs4Xk]
-endif::[]
-
-ifndef::env-github[]
-video::luNam-Cs4Xk[youtube]
-endif::[]
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/luNam-Cs4Xk/0.jpg)](http://www.youtube.com/watch?v=luNam-Cs4Xk "Driving")
 
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
