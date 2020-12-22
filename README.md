@@ -1,6 +1,55 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
-   
+
+## Approach
+### Project Specification
+* The code compiles correctly.
+* The car is able to drive at least 4.32 miles without incident..
+* The car drives according to the speed limit.
+* Max Acceleration and Jerk are not Exceeded.
+* Car does not have collisions.
+* The car stays in its lane, except for the time between changing lanes.
+* The car is able to change lanes
+
+### Flow
+The implementation tries to encapsulate the actions into different steps.
+A system class is generated, which is then being called (cycle method) every 20 ms if there is new telemetry data.
+The system then performs the different steps:
+1. Reset of data that has to be calculated new.
+2. Ego vehicles current position is updated with the telemetry data.
+3. The surroundings of the vehicle are checked
+  * Left lane, right lane and the lane in front
+  * Depending if there is a vehicle within the boundaries, then the state is updated
+4. If the situation requires a lane change, then at this point the system will notate that a lane change will be required.
+5. Trajectory is created depending on specified target speed. Pathpoints from previous path are also taken into consideration.
+6. The main method calls getter function to retrieve the new trajectory.
+
+### Lanes
+From the current system, this part can be extended easily. For the moment it is a basic implementation.
+* Left and right lane are treated equally. A lane change to the lane is not possible if vehicle is 30m in front or 7 meters behind.
+* Lane change order is first left is checked if free, then right. `UpdateLaneDependingOnSituation` . Here later also regulations and laws can be taken into consideration.
+* If a vehicle is in front of ego vehicle and the distance is less then 30 meters, we start to reduce the speed until we get have the speed of the vehicle in front. If the vehicle in front accelerates, we also will accelerate.
+
+
+### Trajectory
+In the method System::CreateTrajectory() the trajectory will be created. For this we will not use x/y coordinates because this is not optimum
+if we have road geometry. Instead frenet coordinates are used. Depending on the lane markings which we get from the map, we can generate now frenet coordinates.
+From the simulator we get also the previous path. Which depending on the velocity of the car, can be consumed more or less, meaning we get a variable size of points back.
+In total we generate five way points. The first two depend on how big the previous path is:
+* If we have more then two then we get the last two of them and we calculate a tangens two our current ego vehicle position.
+* If have two or less points then we calculate a point in front of us so that we do not stand still.
+
+The next three points define then the a trajectory of 90 m ahead, divided in 30 meters, 30m, 60, 90m. Here also the lane is taken into consideration.
+If we want to perform a lane change, we just have to increment or decrement the lane, and then with the help of the map data, the waypoints are set accordingly.
+`const auto next_wp0 =
+    getXY(ego_vehicle_.s + 30, (2 + 4 * current_lane_), map_waypoints_s_, map_waypoints_x_, map_waypoints_y_);`
+
+But five points are not enough. To interpolate them and have later a nice and smooth trajectory we use the spline "library" to get 50 waypoints out of the 5 waypoints we calculated previously.
+
+### Video
+https://github.com/raffael87/CarND-Path-Planning-Project/tree/master/media/drive.mov
+
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
 
@@ -43,13 +92,13 @@ Here is the data provided from the Simulator to the C++ Program
 #### Previous path data given to the Planner
 
 //Note: Return the previous list but with processed points removed, can be a nice tool to show how far along
-the path has processed since last time. 
+the path has processed since last time.
 
 ["previous_path_x"] The previous list of x points previously given to the simulator
 
 ["previous_path_y"] The previous list of y points previously given to the simulator
 
-#### Previous path's end s and d values 
+#### Previous path's end s and d values
 
 ["end_path_s"] The previous list's last point's frenet s value
 
@@ -57,7 +106,7 @@ the path has processed since last time.
 
 #### Sensor Fusion Data, a list of all other car's attributes on the same side of the road. (No Noise)
 
-["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates. 
+["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates.
 
 ## Details
 
@@ -87,7 +136,7 @@ A really helpful resource for doing this project and creating smooth trajectorie
   * Run either `install-mac.sh` or `install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
@@ -142,4 +191,3 @@ still be compilable with cmake and make./
 
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
