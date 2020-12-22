@@ -47,8 +47,14 @@ If we want to perform a lane change, we just have to increment or decrement the 
 But five points are not enough. To interpolate them and have later a nice and smooth trajectory we use the spline "library" to get 50 waypoints out of the 5 waypoints we calculated previously.
 
 ### Video
-https://github.com/raffael87/CarND-Path-Planning-Project/tree/master/media/drive.mov
 
+ifdef::env-github[]
+image:https://img.youtube.com/vi/luNam-Cs4Xk/maxresdefault.jpg[link=https://youtu.be/luNam-Cs4Xk]
+endif::[]
+
+ifndef::env-github[]
+video::luNam-Cs4Xk[youtube]
+endif::[]
 
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
